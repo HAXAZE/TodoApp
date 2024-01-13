@@ -1,35 +1,16 @@
-const express = require("express");
-const { CreateTodo } = require("./zod");
+const mongoose = require("mongoose");
+require('dotenv').config();
 
-const app = express();
+mongoose.connect(process.env.MONGODB_URL);
 
-app.use(express.json());
+const TodoSchema = mongoose.Schema({
+    title: String,
+    description: String,
+    completed: Boolean
+});
 
+const todo = mongoose.model('TodoApp', TodoSchema);
 
-app.post("/todo",function(req,res){
-    const createPayload = req.body;
-    const parsePayload = CreateTodo.safeParse(createPayload);
-    if(!parsePayload.success){
-         res.status(411).json({
-            msg:"You sent the wrong inputs",
-        })
-        return;
-    }
-})
-
-app.get("/todos",function(req,res){
-
-})
-
-app.put("/completed",function(req,res){
-    const updatePayLoad = req.body;
-    const parsePayload = updateTodo.safeParse(updatePayLoad);
-    if(!parsePayload.success){
-        res.status(411).json({
-            msg:"You sent the wrong inputs",
-        })
-        return;
-    }
-})
-
-app.listen(3000);
+module.exports = {
+    todo
+};
